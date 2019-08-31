@@ -37,7 +37,7 @@ class Lexer():
 
         return Token(type, result)
 
-    def get_next_token(self):
+    def next_token(self):
         self.skip_gaps()
 
         if self.current_char is None:
