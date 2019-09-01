@@ -25,7 +25,14 @@ class Parser():
         
     def factor(self):
         result = None
-        if self.is_next(Type.Number.Integer):
+        if self.is_next(Type.BinaryOperation.Plus):
+            self.next_token()
+            result = self.factor()
+        elif self.is_next(Type.BinaryOperation.Minus):
+            self.next_token()
+            result = self.factor()
+            result.value = -result.value
+        elif self.is_next(Type.Number.Integer):
             result = Node.Number(self.token)
         elif self.is_next(Type.Lang.LeftBracket):
             self.next_token()
