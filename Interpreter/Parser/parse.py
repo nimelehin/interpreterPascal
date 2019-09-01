@@ -5,7 +5,11 @@ from Interpreter.TreeComponents.nodes import Node
 
 class Parser():
 
-    def __init__(self, code):
+    def __init__(self):
+        pass
+        
+
+    def set_code_line(self, code):
         self.lexer = Lexer(code)
         self.token = Token()
         self.tokens = []
@@ -38,6 +42,9 @@ class Parser():
             self.next_token()
             result = self.expr()
             self.must_next(Type.Lang.RightBracket)
+        elif self.is_next(Type.Word):
+            print('Var', self.token)
+            result = Node.Var(self.token)
         self.next_token()
         return result
         
@@ -58,5 +65,13 @@ class Parser():
             new_node = self.term()
             node = Node.BinaryOperation(node, new_node, operation_token)
         return node
-            
+
+    def assign(self):
+        node = self.factor()
+        while self.token.type in (Type.BinaryOperation.Assign):
+            operation_token = self.token
+            self.next_token()
+            new_node = self.expr()
+            node = Node.BinaryOperation(node, new_node, operation_token)
+        return node
 

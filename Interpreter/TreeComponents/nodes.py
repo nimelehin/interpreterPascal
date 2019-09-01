@@ -9,6 +9,11 @@ class Node:
             self.value = token.value
             self.type = token.type
 
+    class Var(Basic):
+        def __init__(self, token):
+            self.value = token.value
+            self.type = token.type
+
     class BinaryOperation(Basic):
         def __init__(self, a, b, token):
             self.left = a

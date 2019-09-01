@@ -11,6 +11,9 @@ class NodeVisitor():
         raise Exception('No visit_{} method'.format(type(node).__name__))
 
 class Visitor(NodeVisitor):
+
+    def __init__(self):
+        self.vars = {}
     
     def visit_BinaryOperation(self, node):
         if node.type == Type.BinaryOperation.Plus:
@@ -21,6 +24,12 @@ class Visitor(NodeVisitor):
             return self.visit(node.left) * self.visit(node.right)
         elif node.type == Type.BinaryOperation.Div:
             return self.visit(node.left) // self.visit(node.right)
+        elif node.type == Type.BinaryOperation.Assign:
+            self.vars[node.left.value] = self.visit(node.right)
+            return self.vars[node.left.value]
         
     def visit_Number(self, node):
         return node.value
+
+    def visit_Var(self, node):
+        return self.vars.get(node.value, 0)

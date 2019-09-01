@@ -4,6 +4,8 @@ from Interpreter.types import Type
 from Interpreter.token import Token
 
 def run():
-    str = input()
-    kek = Interpret(Parser(str))
-    print(kek.interpret())
+        inter = Interpret(Parser())
+        while True:
+                str = input()
+                inter.parser.set_code_line(str)
+                print(inter.interpret())
