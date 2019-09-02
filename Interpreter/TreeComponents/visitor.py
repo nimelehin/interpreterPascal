@@ -27,6 +27,12 @@ class Visitor(NodeVisitor):
         elif node.type == Type.BinaryOperation.Assign:
             self.vars[node.left.value] = self.visit(node.right)
             return self.vars[node.left.value]
+
+    def visit_UnaryOperation(self, node):
+        if node.type == Type.BinaryOperation.Plus:
+            return self.visit(node.left)
+        elif node.type == Type.BinaryOperation.Minus:
+            return -self.visit(node.left)
         
     def visit_Number(self, node):
         return node.value

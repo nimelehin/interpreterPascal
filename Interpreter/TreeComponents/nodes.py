@@ -20,3 +20,9 @@ class Node:
             self.right = b
             self.value = token.value
             self.type = token.type
+
+    class UnaryOperation(Basic):
+        def __init__(self, a, token):
+            self.left = a
+            self.value = token.value
+            self.type = token.type

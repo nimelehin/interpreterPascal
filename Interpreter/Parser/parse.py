@@ -29,13 +29,10 @@ class Parser():
         
     def factor(self):
         result = None
-        if self.is_next(Type.BinaryOperation.Plus):
+        if self.is_next(Type.BinaryOperation.Plus) or self.is_next(Type.BinaryOperation.Minus):
+            op_token = self.token
             self.next_token()
-            result = self.factor()
-        elif self.is_next(Type.BinaryOperation.Minus):
-            self.next_token()
-            result = self.factor()
-            result.value = -result.value
+            result = Node.UnaryOperation(self.factor(), op_token)
         elif self.is_next(Type.Number.Integer):
             result = Node.Number(self.token)
         elif self.is_next(Type.Lang.LeftBracket):
@@ -43,7 +40,6 @@ class Parser():
             result = self.expr()
             self.must_next(Type.Lang.RightBracket)
         elif self.is_next(Type.Word):
-            print('Var', self.token)
             result = Node.Var(self.token)
         self.next_token()
         return result
@@ -74,4 +70,6 @@ class Parser():
             new_node = self.expr()
             node = Node.BinaryOperation(node, new_node, operation_token)
         return node
+
+    
 
