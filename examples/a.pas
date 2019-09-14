@@ -4,6 +4,7 @@ BEGIN
     c = 2 * b + a;
     BEGIN
         anotherA = a - 2;
+        anotherV = a + 2;
         anotherC = c * 10 + anotherA;
     END;
 END.
