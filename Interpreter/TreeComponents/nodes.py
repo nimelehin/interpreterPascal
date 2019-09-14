@@ -21,6 +21,15 @@ class Node:
             self.value = token.value
             self.type = token.type
 
+    class NoOperation(Basic):
+        def __init__(self):
+            self.type = 'NoOperation'
+
+    class Compound(Basic):
+        def __init__(self, children = []):
+            self.children = children
+            self.type = 'Compound'
+
     class UnaryOperation(Basic):
         def __init__(self, a, token):
             self.left = a

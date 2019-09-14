@@ -12,3 +12,9 @@ reserved_symbols = {
     '.': Type.Lang.Dot,
     '=': Type.BinaryOperation.Assign,
 }
+
+reserved_words = {
+    'BEGIN': Type.Reserved.Begin,
+    'END': Type.Reserved.End,
+}
+

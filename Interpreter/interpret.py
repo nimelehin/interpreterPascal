@@ -6,7 +6,7 @@ class Interpret(Visitor):
         self.parser = parser
 
     def interpret(self):
-        tree = self.parser.assign()
+        tree = self.parser.program()
         print(tree)
         return self.visit(tree) 
 

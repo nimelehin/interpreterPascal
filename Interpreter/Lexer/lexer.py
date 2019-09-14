@@ -35,6 +35,9 @@ class Lexer():
             result += self.current_char
             self.advance()
 
+        if result in reserved_words:
+            return Token(reserved_words[result], result)
+
         return Token(type, result)
 
     def next_token(self):

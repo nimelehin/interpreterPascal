@@ -28,11 +28,13 @@ class Visitor(NodeVisitor):
             self.vars[node.left.value] = self.visit(node.right)
             return self.vars[node.left.value]
 
-    def visit_UnaryOperation(self, node):
-        if node.type == Type.BinaryOperation.Plus:
-            return self.visit(node.left)
-        elif node.type == Type.BinaryOperation.Minus:
-            return -self.visit(node.left)
+    def visit_NoOperation(self, node):
+        pass
+
+    def visit_Compound(self, node):
+        for i in node.children:
+            self.visit(i)
+        print(self.vars)
         
     def visit_Number(self, node):
         return node.value

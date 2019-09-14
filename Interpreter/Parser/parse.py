@@ -71,5 +71,35 @@ class Parser():
             node = Node.BinaryOperation(node, new_node, operation_token)
         return node
 
-    
+    def statement(self):
+        # assign_statement or compound_statement or empty
+        if self.is_next(Type.Reserved.Begin):
+            return self.compound_statement()
 
+        if self.is_next(Type.Word):
+            return self.assign()
+
+        return Node.NoOperation()
+
+    def statement_list(self):
+        node = self.statement()
+        result = [node]
+        while self.token.type == Type.Lang.Semi:
+            operation_token = self.token
+            self.next_token()
+            node = self.statement()
+            result.append(node)
+        return result
+
+    def compound_statement(self):
+        self.must_next(Type.Reserved.Begin)
+        self.next_token()
+        node = Node.Compound(self.statement_list())
+        self.must_next(Type.Reserved.End)
+        self.next_token()
+        return node
+
+    def program(self):
+        result = self.compound_statement()
+        self.must_next(Type.Lang.Dot)
+        return result

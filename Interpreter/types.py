@@ -24,5 +24,9 @@ class Type:
         Semi = 'Semi'
         Dot = 'Dot'
 
+    class Reserved:
+        Begin = 'BEGIN',
+        End = 'END',
+
     class Special:
         EOF = 'EOF'
