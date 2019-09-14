@@ -3,17 +3,26 @@ from Interpreter.Lexer.reserved_symbols import *
 from Interpreter.types import Type
 
 class Lexer():
-    def __init__(self, code):
+    def __init__(self, code: [str]):
         self.code = code
+        self.current_code_part = code[0]
+        self.current_code_line = 0
+        self.code_lines = len(code)
         self.current_position = 0
-        self.current_char = self.code[self.current_position]
+        self.current_char = self.current_code_part[self.current_position]
 
     def advance(self):
         self.current_position += 1
-        if self.current_position < len(self.code):
-            self.current_char = self.code[self.current_position]
+        if self.current_position < len(self.current_code_part):
+            self.current_char = self.current_code_part[self.current_position]
         else:
-            self.current_char = None
+            self.current_code_line += 1
+            if self.current_code_line < self.code_lines:
+                self.current_code_part = self.code[self.current_code_line]
+                self.current_position = 0
+                self.current_char = self.current_code_part[0]
+            else:
+                self.current_char = None
 
     def skip_gaps(self):
         while self.current_char is not None and self.current_char == ' ':

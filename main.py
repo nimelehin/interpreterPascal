@@ -1,3 +1,3 @@
 from Interpreter import *
 
-run('a.pas')
+run('examples/a.pas')

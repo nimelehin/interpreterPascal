@@ -9,7 +9,7 @@ class Parser():
         pass
         
 
-    def set_code_line(self, code):
+    def set_code_lines(self, code: [str]):
         self.lexer = Lexer(code)
         self.token = Token()
         self.tokens = []
@@ -17,6 +17,7 @@ class Parser():
 
     def next_token(self):
         self.token = self.lexer.next_token()
+        print(self.token)
         self.tokens.append(self.token)
 
     def is_next(self, type_of_token):

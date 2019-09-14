@@ -4,8 +4,14 @@ from Interpreter.types import Type
 from Interpreter.token import Token
 
 def run(filename):
+
+    code = []
+
+    file = open(filename, "r") 
+    for line in file: 
+        line = line.replace('\n', '')
+        code.append(line)
+
     inter = Interpret(Parser())
-    while True:
-        str = input()
-        inter.parser.set_code_line(str)
-        print(inter.interpret())
+    inter.parser.set_code_lines(code)
+    print(inter.interpret())
