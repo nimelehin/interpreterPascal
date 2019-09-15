@@ -3,6 +3,8 @@ from Interpreter.Lexer.reserved_symbols import *
 from Interpreter.types import Type
 
 class Lexer():
+    MAX_OPERATION_SIZE = 2
+
     def __init__(self, code: [str]):
         self.code = code
         self.current_code_part = code[0]
@@ -23,6 +25,13 @@ class Lexer():
                 self.current_char = self.current_code_part[0]
             else:
                 self.current_char = None
+
+    def lookup(self, count):
+        peek_pos = self.current_position + count
+        if peek_pos < len(self.current_code_part):
+            return self.current_code_part[peek_pos]
+        else:
+            return None
 
     def skip_gaps(self):
         while self.current_char is not None and self.current_char == ' ':
@@ -49,6 +58,24 @@ class Lexer():
 
         return Token(type, result)
 
+    def read_operation(self):
+        token = Token()
+        operation = ""
+        for i in range(self.MAX_OPERATION_SIZE):
+            next_element = self.lookup(i)
+            if next_element is None:
+                break
+            operation += next_element
+            if operation in reserved_symbols.keys():
+                token = Token(reserved_symbols[operation], operation)
+
+        if token.value is not None:
+            for i in range(len(operation)):
+                self.advance()
+
+        return token
+
+
     def next_token(self):
         self.skip_gaps()
 
@@ -58,8 +85,6 @@ class Lexer():
             return self.read_number()
         elif self.current_char.isalpha():
             return self.read_word()
-        elif self.current_char in reserved_symbols.keys():
-            token = Token(reserved_symbols[self.current_char], self.current_char)
-            self.advance()
-            return token
+        else:
+            return self.read_operation()
         
