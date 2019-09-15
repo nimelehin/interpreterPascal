@@ -63,7 +63,7 @@ class Parser():
             node = Node.BinaryOperation(node, new_node, operation_token)
         return node
 
-    def assign(self):
+    def assign_statement(self):
         node = self.factor()
         while self.token.type in (Type.BinaryOperation.Assign):
             operation_token = self.token
@@ -78,7 +78,7 @@ class Parser():
             return self.compound_statement()
 
         if self.is_next(Type.Word):
-            return self.assign()
+            return self.assign_statement()
 
         return Node.NoOperation()
 
