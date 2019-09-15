@@ -53,8 +53,8 @@ class Lexer():
             result += self.current_char
             self.advance()
 
-        if result in reserved_words:
-            return Token(reserved_words[result], result)
+        if result.upper() in reserved_words:
+            return Token(reserved_words[result.upper()], result.upper())
 
         return Token(type, result)
 
