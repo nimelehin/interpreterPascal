@@ -65,7 +65,7 @@ class Parser():
 
     def assign_statement(self):
         node = self.factor()
-        while self.token.type in (Type.BinaryOperation.Assign):
+        while self.token.type == Type.BinaryOperation.Assign:
             operation_token = self.token
             self.next_token()
             new_node = self.expr()
