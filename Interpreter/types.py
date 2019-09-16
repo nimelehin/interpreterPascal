@@ -23,10 +23,14 @@ class Type:
         RightBracket = 'RightBracket'
         Semi = 'Semi'
         Dot = 'Dot'
+        Comma = 'Comma'
+        Colon = 'Colon'
 
     class Reserved:
         Begin = 'BEGIN',
         End = 'END',
+        Program = 'Program',
+        Var = 'Var'
 
     class Special:
         EOF = 'EOF'

@@ -10,11 +10,15 @@ reserved_symbols = {
     ';': Type.Lang.Semi,
     '.': Type.Lang.Dot,
     ':=': Type.BinaryOperation.Assign,
+    ',': Type.Lang.Comma,
+    ':': Type.Lang.Colon,
 }
 
 reserved_words = {
     'BEGIN': Type.Reserved.Begin,
     'END': Type.Reserved.End,
     'DIV': Type.BinaryOperation.Div,
+    'PROGRAM': Type.Reserved.Program,
+    'VAR': Type.Reserved.Var,
 }
 

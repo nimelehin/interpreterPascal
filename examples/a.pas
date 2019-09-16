@@ -1,3 +1,9 @@
+PROGRAM a; 
+
+VAR
+   number     : INTEGER;
+   a, b, c, x : INTEGER;
+
 BEGIN
     a := 1;
     b := 3;

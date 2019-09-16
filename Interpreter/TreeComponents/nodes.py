@@ -35,3 +35,16 @@ class Node:
             self.left = a
             self.value = token.value
             self.type = token.type
+
+    class VarsDeclatrations(Basic):
+        def __init__(self, vars, vars_type):
+            self.vars = vars
+            self.vars_type = vars_type
+            self.type = 'VarsDeclatrations'
+
+    class Program(Basic):
+        def __init__(self, name, vars_declarations, main):
+            self.name = name
+            self.vars_declarations = vars_declarations
+            self.main = main
+            self.type = 'Program'

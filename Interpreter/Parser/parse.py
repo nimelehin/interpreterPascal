@@ -28,6 +28,12 @@ class Parser():
             print("{0} is not {1}".format(self.token, type_of_token))
             exit(1)
         
+    def variable(self):
+        self.must_next(Type.Word)
+        result = Node.Var(self.token)
+        self.next_token()
+        return result
+
     def factor(self):
         result = None
         if self.is_next(Type.BinaryOperation.Plus) or self.is_next(Type.BinaryOperation.Minus):
@@ -41,7 +47,7 @@ class Parser():
             result = self.expr()
             self.must_next(Type.Lang.RightBracket)
         elif self.is_next(Type.Word):
-            result = Node.Var(self.token)
+            return self.variable()
         self.next_token()
         return result
         
@@ -100,7 +106,47 @@ class Parser():
         self.next_token()
         return node
 
-    def program(self):
-        result = self.compound_statement()
-        self.must_next(Type.Lang.Dot)
+    def type_spec(self):
+        self.must_next(Type.Word)
+        self.next_token()
+        return Type.Number.Integer
+
+    def var_declarations(self):
+        vars = [self.variable()]
+        while self.token.type == Type.Lang.Comma:
+            self.next_token()
+            vars.append(self.variable())
+        self.must_next(Type.Lang.Colon)
+        self.next_token()
+        cur_type = self.type_spec()
+        self.must_next(Type.Lang.Semi)
+        self.next_token()
+        return Node.VarsDeclatrations(vars, cur_type)
+
+    def declarations(self):
+        if not self.is_next(Type.Reserved.Var):
+            return
+
+        self.must_next(Type.Reserved.Var)
+        self.next_token()
+        result = [self.var_declarations()]
+        while self.token.type != Type.Reserved.Begin:
+            result.append(self.var_declarations())
         return result
+
+    def program_init(self):
+        self.must_next(Type.Reserved.Program)
+        self.next_token()
+        self.must_next(Type.Word)
+        name = self.token.value
+        self.next_token()
+        self.must_next(Type.Lang.Semi)
+        self.next_token()
+        return name
+
+    def program(self):
+        program_name = self.program_init()
+        vars_declarations = self.declarations()
+        main_function = self.compound_statement()
+        self.must_next(Type.Lang.Dot)
+        return Node.Program(program_name, vars_declarations, main_function)

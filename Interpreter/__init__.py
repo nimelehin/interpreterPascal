@@ -10,7 +10,8 @@ def run(filename):
     file = open(filename, "r") 
     for line in file: 
         line = line.replace('\n', '')
-        code.append(line)
+        if len(line) > 0:
+            code.append(line)
 
     inter = Interpret(Parser())
     inter.parser.set_code_lines(code)

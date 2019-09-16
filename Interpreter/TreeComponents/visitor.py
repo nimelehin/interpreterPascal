@@ -14,6 +14,17 @@ class Visitor(NodeVisitor):
 
     def __init__(self):
         self.vars = {}
+
+    def visit_Program(self, node):
+        print("Running program", node.name)
+        for vars_declaration_one in node.vars_declarations:
+            self.visit(vars_declaration_one)
+        self.visit(node.main)
+        
+    def visit_VarsDeclatrations(self, node):
+        for var in node.vars:
+            print("Var ", var.value, " of type ", node.vars_type)
+
     
     def visit_BinaryOperation(self, node):
         if node.type == Type.BinaryOperation.Plus:

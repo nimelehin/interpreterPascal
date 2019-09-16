@@ -34,6 +34,7 @@ class Lexer():
             return None
 
     def skip_gaps(self):
+        print(self.current_char)
         while self.current_char is not None and self.current_char == ' ':
             self.advance()
 
@@ -66,11 +67,12 @@ class Lexer():
             if next_element is None:
                 break
             operation += next_element
+            print(operation)
             if operation in reserved_symbols.keys():
                 token = Token(reserved_symbols[operation], operation)
 
         if token.value is not None:
-            for i in range(len(operation)):
+            for i in range(len(token.value)):
                 self.advance()
 
         return token
