@@ -1,36 +1,38 @@
 class Type:
 
-    Word = 'Word'
+    Word = 'WORD'
     
     class Number:
-        Integer = 'Integer'
-        Float = 'Float'
+        Integer = 'INTEGER'
+        Real = 'REAL'
 
     class BinaryOperation:
-        Plus = 'Plus'
-        Minus = 'Minus'
-        Mul = 'Mul'
-        Div = 'Div'
-        Equal = 'Equal'
-        Assign = 'Assign'
+        Plus = 'PLUS'
+        Minus = 'MINUS'
+        Mul = 'MUL'
+        Div = 'DIV'
+        DivInt = 'DIVINT'
+        Mod = 'MOD'
+        Equal = 'EQUAL'
+        Assign = 'ASSIGN'
 
     class UnaryOperation:
-        fill = 'fill'
+        fill = 'FILL'
 
     class Lang:
-        Var = 'Var'
+        Var = 'VAR'
         LeftBracket = 'LeftBracket'
         RightBracket = 'RightBracket'
-        Semi = 'Semi'
-        Dot = 'Dot'
-        Comma = 'Comma'
-        Colon = 'Colon'
+        Semi = 'SEMI'
+        Dot = 'DOT'
+        Comma = 'COMMA'
+        Colon = 'COLON'
 
     class Reserved:
-        Begin = 'BEGIN',
-        End = 'END',
-        Program = 'Program',
-        Var = 'Var'
+        Begin = 'BEGIN'
+        End = 'END'
+        Program = 'PROGRAM'
+        Var = 'VAR'
 
     class Special:
         EOF = 'EOF'

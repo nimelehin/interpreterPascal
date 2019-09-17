@@ -36,6 +36,12 @@ class Node:
             self.value = token.value
             self.type = token.type
 
+    class AssignOperation(Basic):
+        def __init__(self, var_id, expr):
+            self.var_id = var_id
+            self.expr = expr
+            self.type = 'AssignOperation'
+
     class VarsDeclatrations(Basic):
         def __init__(self, vars, vars_type):
             self.vars = vars

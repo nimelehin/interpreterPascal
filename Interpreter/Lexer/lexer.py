@@ -34,18 +34,24 @@ class Lexer():
             return None
 
     def skip_gaps(self):
-        print(self.current_char)
         while self.current_char is not None and self.current_char == ' ':
             self.advance()
 
     def read_number(self):
-        type = Type.Number.Integer
         result = ""
-        while self.current_char is not None and self.current_char.isdigit():
+        was_dot = False
+        while self.current_char is not None and (self.current_char.isdigit() or self.current_char == '.'):
+            if self.current_char == '.':
+                if was_dot:
+                    print(">2 dots in number")
+                    exit(0)
+                was_dot = True
             result += self.current_char
             self.advance()
-
-        return Token(type, int(result))
+        if was_dot:
+            return Token(Type.Number.Real, float(result))
+        else:
+            return Token(Type.Number.Integer, int(result))
 
     def read_word(self):
         type = Type.Word
@@ -67,7 +73,6 @@ class Lexer():
             if next_element is None:
                 break
             operation += next_element
-            print(operation)
             if operation in reserved_symbols.keys():
                 token = Token(reserved_symbols[operation], operation)
 

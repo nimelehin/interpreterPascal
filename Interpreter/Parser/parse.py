@@ -2,6 +2,7 @@ from Interpreter.Lexer.lexer import Lexer
 from Interpreter.types import Type
 from Interpreter.token import Token
 from Interpreter.TreeComponents.nodes import Node
+from Interpreter.Lexer.reserved_symbols import available_var_types
 
 class Parser():
 
@@ -21,6 +22,11 @@ class Parser():
         self.tokens.append(self.token)
 
     def is_next(self, type_of_token):
+        if isinstance(type_of_token, list):
+            for type_of_cur_token in type_of_token:
+                if self.token.type == type_of_cur_token:
+                    return True
+            return False
         return self.token.type == type_of_token
 
     def must_next(self, type_of_token):
@@ -40,7 +46,7 @@ class Parser():
             op_token = self.token
             self.next_token()
             result = Node.UnaryOperation(self.factor(), op_token)
-        elif self.is_next(Type.Number.Integer):
+        elif self.is_next(available_var_types):
             result = Node.Number(self.token)
         elif self.is_next(Type.Lang.LeftBracket):
             self.next_token()
@@ -53,7 +59,7 @@ class Parser():
         
     def term(self):
         node = self.factor()
-        while self.token.type in (Type.BinaryOperation.Mul, Type.BinaryOperation.Div):
+        while self.token.type in (Type.BinaryOperation.Mul, Type.BinaryOperation.Div, Type.BinaryOperation.Mod, Type.BinaryOperation.DivInt):
             operation_token = self.token
             self.next_token()
             new_node = self.factor()
@@ -70,12 +76,12 @@ class Parser():
         return node
 
     def assign_statement(self):
-        node = self.factor()
+        node = self.variable()
         while self.token.type == Type.BinaryOperation.Assign:
             operation_token = self.token
             self.next_token()
             new_node = self.expr()
-            node = Node.BinaryOperation(node, new_node, operation_token)
+            node = Node.AssignOperation(node.value, new_node)
         return node
 
     def statement(self):
@@ -108,8 +114,11 @@ class Parser():
 
     def type_spec(self):
         self.must_next(Type.Word)
+        vars_type = None
+        if self.token.value.upper() in available_var_types:
+            vars_type = self.token.value.upper()
         self.next_token()
-        return Type.Number.Integer
+        return vars_type
 
     def var_declarations(self):
         vars = [self.variable()]

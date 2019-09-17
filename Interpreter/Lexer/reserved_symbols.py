@@ -5,6 +5,7 @@ reserved_symbols = {
     '-': Type.BinaryOperation.Minus,
     '=': Type.BinaryOperation.Equal,
     '*': Type.BinaryOperation.Mul,
+    '/': Type.BinaryOperation.Div,
     '(': Type.Lang.LeftBracket,
     ')': Type.Lang.RightBracket,
     ';': Type.Lang.Semi,
@@ -17,8 +18,9 @@ reserved_symbols = {
 reserved_words = {
     'BEGIN': Type.Reserved.Begin,
     'END': Type.Reserved.End,
-    'DIV': Type.BinaryOperation.Div,
+    'DIV': Type.BinaryOperation.DivInt,
     'PROGRAM': Type.Reserved.Program,
     'VAR': Type.Reserved.Var,
 }
 
+available_var_types = [Type.Number.Integer, Type.Number.Real]

@@ -15,4 +15,4 @@ def run(filename):
 
     inter = Interpret(Parser())
     inter.parser.set_code_lines(code)
-    print(inter.interpret())
+    inter.interpret()
