@@ -1,4 +1,11 @@
-PROGRAM a; 
+PROGRAM a;
+
+procedure pr;
+var a : INTEGER;
+begin
+    a := 300;
+end;
+end;
 
 VAR
     anotherA, anotherV, anotherC: INTEGER;
@@ -9,6 +16,7 @@ BEGIN
     b := 3;
     proA := 1.2;
     c := 2 * b + a;
+    pr;
     begin
         anotherA := a - 2;
         anotherV := 4 DIV 2;

@@ -20,6 +20,7 @@ reserved_words = {
     'END': Type.Reserved.End,
     'DIV': Type.BinaryOperation.DivInt,
     'PROGRAM': Type.Reserved.Program,
+    'PROCEDURE': Type.Reserved.Procedure,
     'VAR': Type.Reserved.Var,
 }
 

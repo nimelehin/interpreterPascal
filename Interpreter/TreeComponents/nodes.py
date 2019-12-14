@@ -1,9 +1,9 @@
 class Node:
-    
+
     class Basic():
         def __str__(self):
             return "type: {0}".format(self.type)
-    
+
     class Number(Basic):
         def __init__(self, token):
             self.value = token.value
@@ -48,9 +48,22 @@ class Node:
             self.vars_type = vars_type
             self.type = 'VarsDeclatrations'
 
-    class Program(Basic):
+    class ProcedureCall(Basic):
+        def __init__(self, name):
+            self.name = name
+            self.type = 'ProcedureCall'
+
+    class Procedure(Basic):
         def __init__(self, name, vars_declarations, main):
             self.name = name
+            self.vars_declarations = vars_declarations
+            self.main = main
+            self.type = 'Procedure'
+
+    class Program(Basic):
+        def __init__(self, name, procedures, vars_declarations, main):
+            self.name = name
+            self.procedures = procedures
             self.vars_declarations = vars_declarations
             self.main = main
             self.type = 'Program'

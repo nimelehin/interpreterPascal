@@ -26,15 +26,42 @@ class NodeVisitor():
 class Visitor(NodeVisitor):
 
     def __init__(self):
+        self.procedures = {}
         self.vars = {}
         self.var_types = {}
 
     def visit_Program(self, node):
         print("Running program", node.name)
+        for procedure in node.procedures:
+            self.procedures[procedure.name] = procedure
         for vars_declaration_one in node.vars_declarations:
             self.visit(vars_declaration_one)
         self.visit(node.main)
-        
+        print(self.vars)
+
+    def visit_Procedure(self, node):
+        last_vars = self.vars
+        last_var_types = self.var_types
+
+        self.vars = {}
+        self.var_types = {}
+
+        for vars_declaration_one in node.vars_declarations:
+            self.visit(vars_declaration_one)
+        self.visit(node.main)
+
+        print(self.vars)
+
+        self.vars = last_vars
+        self.var_types = last_var_types
+
+
+    def visit_ProcedureCall(self, node):
+        if (self.procedures.get(node.name, None) == None):
+            print("[Err] No such proc")
+            exit(1)
+        self.visit(self.procedures[node.name])
+
     def visit_VarsDeclatrations(self, node):
         for var in node.vars:
             print("Var ", var.value, " of type ", node.vars_type)
@@ -43,7 +70,7 @@ class Visitor(NodeVisitor):
                 self.vars[var.value] = 0
             else:
                 self.vars[var.value] = 0.0
-    
+
     def visit_BinaryOperation(self, node):
         if node.type == Type.BinaryOperation.Plus:
             lop, ltype = self.visit(node.left)
@@ -80,8 +107,8 @@ class Visitor(NodeVisitor):
     def visit_Compound(self, node):
         for i in node.children:
             self.visit(i)
-        print(self.vars)
-        
+        # print(self.vars)
+
     def visit_Number(self, node):
         return (node.value, node.type)
 

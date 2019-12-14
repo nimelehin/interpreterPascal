@@ -1,7 +1,7 @@
 class Type:
 
     Word = 'WORD'
-    
+
     class Number:
         Integer = 'INTEGER'
         Real = 'REAL'
@@ -33,6 +33,7 @@ class Type:
         End = 'END'
         Program = 'PROGRAM'
         Var = 'VAR'
+        Procedure = 'PROCEDURE'
 
     class Special:
         EOF = 'EOF'
