@@ -18,6 +18,8 @@ class Type:
 
     class UnaryOperation:
         fill = 'FILL'
+        Plus = 'PLUS'
+        Minus = 'MINUS'
 
     class Lang:
         Var = 'VAR'
@@ -34,6 +36,7 @@ class Type:
         Program = 'PROGRAM'
         Var = 'VAR'
         Procedure = 'PROCEDURE'
+        Function = 'FUNCTION'
 
     class Special:
         EOF = 'EOF'

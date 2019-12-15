@@ -48,17 +48,32 @@ class Node:
             self.vars_type = vars_type
             self.type = 'VarsDeclatrations'
 
-    class ProcedureCall(Basic):
-        def __init__(self, name):
+    class ProcedureOrFunctionVarsDeclatrations(Basic):
+        def __init__(self, vars, vars_type, referenced):
+            self.vars = vars
+            self.vars_type = vars_type
+            self.referenced = referenced
+            self.type = 'ProcedureOrFunctionVarsDeclatrations'
+
+    class ProcedureOrFunctionCall(Basic):
+        def __init__(self, name, passed_params):
             self.name = name
+            self.passed_params = passed_params
             self.type = 'ProcedureCall'
 
     class Procedure(Basic):
-        def __init__(self, name, vars_declarations, main):
+        def __init__(self, name, params, vars_declarations, main):
             self.name = name
+            self.params = params
             self.vars_declarations = vars_declarations
             self.main = main
             self.type = 'Procedure'
+
+    class Function(Procedure):
+        def __init__(self, name, params, ret_type, vars_declarations, main):
+            super().__init__(name, params, vars_declarations, main)
+            self.return_type = ret_type
+            self.type = 'Function'
 
     class Program(Basic):
         def __init__(self, name, procedures, vars_declarations, main):

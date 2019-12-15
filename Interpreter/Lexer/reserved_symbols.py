@@ -21,6 +21,7 @@ reserved_words = {
     'DIV': Type.BinaryOperation.DivInt,
     'PROGRAM': Type.Reserved.Program,
     'PROCEDURE': Type.Reserved.Procedure,
+    'FUNCTION': Type.Reserved.Function,
     'VAR': Type.Reserved.Var,
 }
 

@@ -7,19 +7,23 @@ begin
 end;
 end;
 
+procedure sum(var a : INTEGER; b : INTEGER);
+begin
+    a := a + b;
+end;
+end;
+
+function solve(a, b, c, x: INTEGER): Integer;
+begin
+    solve := a * x * x + b * x + c;
+end;
+end;
+
 VAR
-    anotherA, anotherV, anotherC: INTEGER;
     a, b, c, x : INTEGER;
-    proA : REAL;
 BEGIN
     a := 1;
-    b := 3;
-    proA := 1.2;
-    c := 2 * b + a;
-    pr;
-    begin
-        anotherA := a - 2;
-        anotherV := 4 DIV 2;
-        anotherC := c * 10 + anotherA
-    END;
+    c := 1000;
+    x := solve(a, 3, 4, 22) * -1;
+    sum(x, c);
 END.
