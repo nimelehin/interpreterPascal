@@ -30,7 +30,7 @@ class Parser():
                 self.read_tokens += 1
                 if self.tokens[-1].type == Type.Special.EOF:
                     self.lexer_rich_the_end = True
-                    break;
+                    break
 
         return self.tokens[min(pos, self.read_tokens - 1)]
 
@@ -61,9 +61,10 @@ class Parser():
         self.next_token()
         return result
 
+    # factor handle -val, +val, val, (exprs), funcs(), vars
     def factor(self):
         result = None
-        if self.is_next(Type.UnaryOperation.Plus) or self.is_next(Type.UnaryOperation.Minus):
+        if self.is_next([Type.UnaryOperation.Plus, Type.UnaryOperation.Minus, Type.UnaryOperation.Not]):
             op_token = self.token
             self.next_token()
             result = Node.UnaryOperation(self.factor(), op_token)
@@ -83,24 +84,55 @@ class Parser():
         elif self.is_next(Type.Word):
             return self.variable()
 
-    def term(self):
-        print("HH", self.token)
+    # prefactor handle factor (=, >, <, <>, <=, >=) factor
+    def prefactor(self):
+        handle_operations = [
+            Type.BinaryOperation.Equal,
+            Type.BinaryOperation.NotEqual,
+            Type.BinaryOperation.Less,
+            Type.BinaryOperation.LessEqual,
+            Type.BinaryOperation.Bigger,
+            Type.BinaryOperation.BiggerEqual,
+        ]
+        
         node = self.factor()
-        while self.token.type in (Type.BinaryOperation.Mul, Type.BinaryOperation.Div, Type.BinaryOperation.Mod, Type.BinaryOperation.DivInt):
+        if self.is_next(handle_operations):
             operation_token = self.token
             self.next_token()
             new_node = self.factor()
-            print("HH", self.token)
             node = Node.BinaryOperation(node, new_node, operation_token)
         return node
 
+    # term handle prefactor (*, all divs, and) prefactor
+    def term(self):
+        node = self.prefactor()
+        if self.is_next(Type.BinaryOperation.And):
+            operation_token = self.token
+            self.next_token()
+            new_node = self.prefactor()
+            node = Node.BinaryOperation(node, new_node, operation_token)
+        else:
+            while self.token.type in (Type.BinaryOperation.Mul, Type.BinaryOperation.Div, Type.BinaryOperation.Mod, Type.BinaryOperation.DivInt):
+                operation_token = self.token
+                self.next_token()
+                new_node = self.factor()
+                node = Node.BinaryOperation(node, new_node, operation_token)
+        return node
+
+    # expr handle term (+, -, or) term
     def expr(self):
         node = self.term()
-        while self.token.type in (Type.BinaryOperation.Plus, Type.BinaryOperation.Minus):
+        if self.is_next(Type.BinaryOperation.Or):
             operation_token = self.token
             self.next_token()
             new_node = self.term()
             node = Node.BinaryOperation(node, new_node, operation_token)
+        else:
+            while self.token.type in (Type.BinaryOperation.Plus, Type.BinaryOperation.Minus):
+                operation_token = self.token
+                self.next_token()
+                new_node = self.term()
+                node = Node.BinaryOperation(node, new_node, operation_token)
         return node
 
     def assign_statement(self):
@@ -129,11 +161,9 @@ class Parser():
         return params
 
     def procedure_or_function_call(self):
-        print("FNC CALL")
         self.must_next(Type.Word)
         name_of_proc = self.token.value
         self.next_token()
-        print("ok", name_of_proc)
         passed_params = self.procedure_or_function_passed_params()
         return Node.ProcedureOrFunctionCall(name_of_proc, passed_params);
 

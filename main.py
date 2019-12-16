@@ -1,3 +1,3 @@
 from Interpreter import *
 
-run('examples/a.pas')
+run('examples/booleans.pas')

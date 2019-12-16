@@ -24,7 +24,9 @@ VAR
     flag : BOOLEAN;
 BEGIN
     a := 1;
+    b := 1;
     c := 1000;
     x := solve(a, 3, 4, 22) * -1;
+    flag := (a = c) or (a = b);
     sum(x, c);
 END.

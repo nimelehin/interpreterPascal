@@ -14,13 +14,23 @@ class Type:
         Div = 'DIV'
         DivInt = 'DIVINT'
         Mod = 'MOD'
-        Equal = 'EQUAL'
+       
         Assign = 'ASSIGN'
+        
+        And = 'AND'
+        Or = 'OR'
+        Equal = 'EQUAL'
+        NotEqual = "NOTEQUAL"
+        Less = "LESS"
+        LessEqual = "LESSEQUAL"
+        Bigger = "BIGGER"
+        BiggerEqual = "BIGGEREQUAL"
 
     class UnaryOperation:
         fill = 'FILL'
         Plus = 'PLUS'
         Minus = 'MINUS'
+        Not = 'NOT'
 
     class Lang:
         Var = 'VAR'

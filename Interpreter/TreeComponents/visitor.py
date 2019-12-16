@@ -10,7 +10,14 @@ class NodeVisitor():
     def generic_visit(self, node, params=None):
         raise Exception('No visit_{} method'.format(type(node).__name__))
 
-    def choose_type(self, left, right, must=None):
+    def check_type(self, tp, must):
+        if must == tp:
+            return must
+        else:
+            print("Diff types: ", left, right, must)
+            exit(0)
+
+    def cast_type(self, left, right, must=None):
         if must is None:
             if left == Type.Number.Real or right == Type.Number.Real:
                 return Type.Number.Real
@@ -138,41 +145,52 @@ class Visitor(NodeVisitor):
                 exit(0)
 
     def visit_BinaryOperation(self, node, params=None):
+        lop, ltype = self.visit(node.left)
+        rop, rtype = self.visit(node.right)
+
         if node.type == Type.BinaryOperation.Plus:
-            lop, ltype = self.visit(node.left)
-            rop, rtype = self.visit(node.right)
-            return (lop + rop, self.choose_type(ltype, rtype))
+            return (lop + rop, self.cast_type(ltype, rtype))
         elif node.type == Type.BinaryOperation.Minus:
-            lop, ltype = self.visit(node.left)
-            rop, rtype = self.visit(node.right)
-            return (lop - rop, self.choose_type(ltype, rtype))
+            return (lop - rop, self.cast_type(ltype, rtype))
         elif node.type == Type.BinaryOperation.Mul:
-            lop, ltype = self.visit(node.left)
-            rop, rtype = self.visit(node.right)
-            return (lop * rop, self.choose_type(ltype, rtype))
+            return (lop * rop, self.cast_type(ltype, rtype))
         elif node.type == Type.BinaryOperation.Div:
-            lop, ltype = self.visit(node.left)
-            rop, rtype = self.visit(node.right)
             return (lop / rop, Type.Number.Real)
         elif node.type == Type.BinaryOperation.DivInt:
-            lop, ltype = self.visit(node.left)
-            rop, rtype = self.visit(node.right)
-            return (lop // rop, self.choose_type(ltype, rtype, Type.Number.Integer))
+            return (lop // rop, self.cast_type(ltype, rtype, Type.Number.Integer))
+        
+
+        # boolean operations
+        elif node.type == Type.BinaryOperation.And:
+            return (lop and rop, Type.Number.Boolean)
+        elif node.type == Type.BinaryOperation.Or:
+            return (lop or rop, Type.Number.Boolean)
+
+        elif node.type == Type.BinaryOperation.Equal:
+            return (lop == rop, Type.Number.Boolean)
+        elif node.type == Type.BinaryOperation.NotEqual:
+            return (lop != rop, Type.Number.Boolean)
+        elif node.type == Type.BinaryOperation.Less:
+            return (lop < rop, Type.Number.Boolean)
+        elif node.type == Type.BinaryOperation.LessEqual:
+            return (lop <= rop, Type.Number.Boolean)
+        elif node.type == Type.BinaryOperation.Bigger:
+            return (lop > rop, Type.Number.Boolean)
+        elif node.type == Type.BinaryOperation.BiggerEqual:
+            return (lop >= rop, Type.Number.Boolean)
 
     def visit_UnaryOperation(self, node, params=None):
+        lop, ltype = self.visit(node.left)
         if node.type == Type.UnaryOperation.Plus:
-            lop, ltype = self.visit(node.left)
             return (lop, ltype)
         elif node.type == Type.UnaryOperation.Minus:
-            lop, ltype = self.visit(node.left)
             return (-lop, ltype)
+        elif node.type == Type.UnaryOperation.Not:
+            return (not lop, self.check_type(ltype, Type.Number.Boolean))
 
     def visit_AssignOperation(self, node, params=None):
         op, type = self.visit(node.expr)
-        if self.var_types[node.var_id] == Type.Number.Integer:
-            self.vars[node.var_id] = op
-        else:
-            self.vars[node.var_id] = op
+        self.vars[node.var_id] = op
         return (self.vars[node.var_id], self.var_types[node.var_id])
 
     def visit_NoOperation(self, node, params=None):

@@ -3,7 +3,6 @@ from Interpreter.types import Type
 reserved_symbols = {
     '+': Type.BinaryOperation.Plus,
     '-': Type.BinaryOperation.Minus,
-    '=': Type.BinaryOperation.Equal,
     '*': Type.BinaryOperation.Mul,
     '/': Type.BinaryOperation.Div,
     '(': Type.Lang.LeftBracket,
@@ -13,12 +12,22 @@ reserved_symbols = {
     ':=': Type.BinaryOperation.Assign,
     ',': Type.Lang.Comma,
     ':': Type.Lang.Colon,
+
+    '=': Type.BinaryOperation.Equal,
+    '<>': Type.BinaryOperation.NotEqual,
+    '<': Type.BinaryOperation.Less,
+    '<=': Type.BinaryOperation.LessEqual,
+    '>': Type.BinaryOperation.Bigger,
+    '>=': Type.BinaryOperation.BiggerEqual,
 }
 
 reserved_words = {
     'BEGIN': Type.Reserved.Begin,
     'END': Type.Reserved.End,
     'DIV': Type.BinaryOperation.DivInt,
+    'AND': Type.BinaryOperation.And,
+    'OR': Type.BinaryOperation.Or,
+    'NOT': Type.UnaryOperation.Not,
     'PROGRAM': Type.Reserved.Program,
     'PROCEDURE': Type.Reserved.Procedure,
     'FUNCTION': Type.Reserved.Function,
