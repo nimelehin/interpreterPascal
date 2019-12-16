@@ -21,6 +21,7 @@ end;
 
 VAR
     a, b, c, x : INTEGER;
+    flag : BOOLEAN;
 BEGIN
     a := 1;
     c := 1000;

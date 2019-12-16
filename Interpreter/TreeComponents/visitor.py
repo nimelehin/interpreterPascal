@@ -129,8 +129,13 @@ class Visitor(NodeVisitor):
             self.var_types[var.value] = node.vars_type
             if node.vars_type == Type.Number.Integer:
                 self.vars[var.value] = 0
-            else:
+            elif node.vars_type == Type.Number.Real:
                 self.vars[var.value] = 0.0
+            elif node.vars_type == Type.Number.Boolean:
+                self.vars[var.value] = False
+            else:
+                print("Unsupported type")
+                exit(0)
 
     def visit_BinaryOperation(self, node, params=None):
         if node.type == Type.BinaryOperation.Plus:

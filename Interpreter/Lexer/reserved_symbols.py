@@ -25,4 +25,4 @@ reserved_words = {
     'VAR': Type.Reserved.Var,
 }
 
-available_var_types = [Type.Number.Integer, Type.Number.Real]
+available_var_types = [Type.Number.Integer, Type.Number.Real, Type.Number.Boolean]

@@ -5,6 +5,7 @@ class Type:
     class Number:
         Integer = 'INTEGER'
         Real = 'REAL'
+        Boolean = 'BOOLEAN'
 
     class BinaryOperation:
         Plus = 'PLUS'
