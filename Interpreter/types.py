@@ -48,8 +48,6 @@ class Type:
         Var = 'VAR'
         Procedure = 'PROCEDURE'
         Function = 'FUNCTION'
-        TrueConst = 'TrueConst'
-        FalseConst = 'FalseConst'
 
     class Special:
         EOF = 'EOF'
