@@ -9,6 +9,11 @@ class Parser():
     def __init__(self):
         pass
 
+
+    ####################
+    # TOKEN NAVIGATION #
+    ####################
+
     def set_code_lines(self, code: [str]):
         self.lexer = Lexer(code)
         self.token = Token()
@@ -55,6 +60,12 @@ class Parser():
             print("{0} is not {1}".format(self.token, type_of_token))
             exit(1)
 
+
+    #########################
+    # EXPRESSISONS HANDLERS #
+    #########################
+
+    # variable handle var
     def variable(self):
         self.must_next(Type.Word)
         result = Node.Var(self.token)
@@ -75,7 +86,7 @@ class Parser():
             return result
         elif self.is_next(Type.Lang.LeftBracket):
             self.next_token()
-            result = self.expr()
+            result = self.comparing_expr()
             self.must_next(Type.Lang.RightBracket)
             self.next_token()
             return result
@@ -84,33 +95,15 @@ class Parser():
         elif self.is_next(Type.Word):
             return self.variable()
 
-    # prefactor handle factor (=, >, <, <>, <=, >=) factor
-    def prefactor(self):
-        handle_operations = [
-            Type.BinaryOperation.Equal,
-            Type.BinaryOperation.NotEqual,
-            Type.BinaryOperation.Less,
-            Type.BinaryOperation.LessEqual,
-            Type.BinaryOperation.Bigger,
-            Type.BinaryOperation.BiggerEqual,
-        ]
-        
-        node = self.factor()
-        if self.is_next(handle_operations):
-            operation_token = self.token
-            self.next_token()
-            new_node = self.factor()
-            node = Node.BinaryOperation(node, new_node, operation_token)
-        return node
-
     # term handle prefactor (*, all divs, and) prefactor
     def term(self):
-        node = self.prefactor()
+        node = self.factor()
         if self.is_next(Type.BinaryOperation.And):
-            operation_token = self.token
-            self.next_token()
-            new_node = self.prefactor()
-            node = Node.BinaryOperation(node, new_node, operation_token)
+            while self.token.type in (Type.BinaryOperation.And):
+                operation_token = self.token
+                self.next_token()
+                new_node = self.factor()
+                node = Node.BinaryOperation(node, new_node, operation_token)
         else:
             while self.token.type in (Type.BinaryOperation.Mul, Type.BinaryOperation.Div, Type.BinaryOperation.Mod, Type.BinaryOperation.DivInt):
                 operation_token = self.token
@@ -123,10 +116,11 @@ class Parser():
     def expr(self):
         node = self.term()
         if self.is_next(Type.BinaryOperation.Or):
-            operation_token = self.token
-            self.next_token()
-            new_node = self.term()
-            node = Node.BinaryOperation(node, new_node, operation_token)
+            while self.token.type in (Type.BinaryOperation.Or):
+                operation_token = self.token
+                self.next_token()
+                new_node = self.term()
+                node = Node.BinaryOperation(node, new_node, operation_token)
         else:
             while self.token.type in (Type.BinaryOperation.Plus, Type.BinaryOperation.Minus):
                 operation_token = self.token
@@ -135,14 +129,120 @@ class Parser():
                 node = Node.BinaryOperation(node, new_node, operation_token)
         return node
 
+    # comparing_expr handle expr (=, >, <, <>, <=, >=) expr
+    def comparing_expr(self):
+        handle_operations = [
+            Type.BinaryOperation.Equal,
+            Type.BinaryOperation.NotEqual,
+            Type.BinaryOperation.Less,
+            Type.BinaryOperation.LessEqual,
+            Type.BinaryOperation.Bigger,
+            Type.BinaryOperation.BiggerEqual,
+        ]
+
+        node = self.expr()
+        if self.is_next(handle_operations):
+            operation_token = self.token
+            self.next_token()
+            new_node = self.expr()
+            node = Node.BinaryOperation(node, new_node, operation_token)
+        return node
+
+
+
+    ##############
+    # STATEMENTS #
+    ##############
+
+    def statement_list(self):
+        node = self.statement()
+        result = [node]
+        while self.token.type == Type.Lang.Semi:
+            operation_token = self.token
+            print("OP", operation_token)
+            self.next_token()
+            node = self.statement()
+            result.append(node)
+        return result
+
+    def statement(self):
+        # assign_statement or compound_statement or empty
+        if self.is_next(Type.Reserved.Begin):
+            return self.compound_statement()
+
+        if self.is_next(Type.Word) and self.is_nth(Type.BinaryOperation.Assign, 1):
+            return self.assign_statement()
+
+        if self.is_next(Type.Word) and (self.is_nth(Type.Lang.Semi, 1) or self.is_nth(Type.Lang.LeftBracket, 1)):
+            print("here")
+            return self.procedure_or_function_call()
+
+        return Node.NoOperation()
+
     def assign_statement(self):
         node = self.variable()
         while self.token.type == Type.BinaryOperation.Assign:
             operation_token = self.token
             self.next_token()
-            new_node = self.expr()
+            new_node = self.comparing_expr()
             node = Node.AssignOperation(node.value, new_node)
         return node
+
+    def compound_statement(self):
+        self.must_next(Type.Reserved.Begin)
+        self.next_token()
+        node = Node.Compound(self.statement_list())
+        self.must_next(Type.Reserved.End)
+        self.next_token()
+        return node
+
+
+    #####################
+    # VARS DECLARATIONS #
+    #####################
+
+
+    def declarations(self):
+        if not self.is_next(Type.Reserved.Var):
+            return []
+
+        self.must_next(Type.Reserved.Var)
+        self.next_token()
+        result = [self.var_declarations()]
+        while self.token.type != Type.Reserved.Begin:
+            result.append(self.var_declarations())
+        return result
+
+    def var_declarations(self):
+        vars = self.vars_names()
+        self.must_next(Type.Lang.Colon)
+        self.next_token()
+        cur_type = self.type_spec()
+        self.must_next(Type.Lang.Semi)
+        self.next_token()
+        return Node.VarsDeclatrations(vars, cur_type)
+
+    def type_spec(self):
+        self.must_next(Type.Word)
+        vars_type = None
+        if self.token.value.upper() in available_var_types:
+            vars_type = self.token.value.upper()
+        self.next_token()
+        return vars_type
+
+    def vars_names(self):
+        vars = [self.variable()]
+        while self.token.type == Type.Lang.Comma:
+            self.next_token()
+            vars.append(self.variable())
+        return vars
+        
+
+    ############################
+    # PROCEDURES AND FUNCTIONS #
+    ############################
+
+    # calling staff
 
     def procedure_or_function_passed_params(self):
         if not self.is_next(Type.Lang.LeftBracket):
@@ -167,74 +267,8 @@ class Parser():
         passed_params = self.procedure_or_function_passed_params()
         return Node.ProcedureOrFunctionCall(name_of_proc, passed_params);
 
-    def statement(self):
-        # assign_statement or compound_statement or empty
-        if self.is_next(Type.Reserved.Begin):
-            return self.compound_statement()
 
-        if self.is_next(Type.Word) and self.is_nth(Type.BinaryOperation.Assign, 1):
-            return self.assign_statement()
-
-        if self.is_next(Type.Word) and (self.is_nth(Type.Lang.Semi, 1) or self.is_nth(Type.Lang.LeftBracket, 1)):
-            print("here")
-            return self.procedure_or_function_call()
-
-        return Node.NoOperation()
-
-    def statement_list(self):
-        node = self.statement()
-        result = [node]
-        while self.token.type == Type.Lang.Semi:
-            operation_token = self.token
-            print("OP", operation_token)
-            self.next_token()
-            node = self.statement()
-            result.append(node)
-        return result
-
-    def compound_statement(self):
-        self.must_next(Type.Reserved.Begin)
-        self.next_token()
-        node = Node.Compound(self.statement_list())
-        self.must_next(Type.Reserved.End)
-        self.next_token()
-        return node
-
-    def type_spec(self):
-        self.must_next(Type.Word)
-        vars_type = None
-        if self.token.value.upper() in available_var_types:
-            vars_type = self.token.value.upper()
-        self.next_token()
-        return vars_type
-
-    def vars_names(self):
-        vars = [self.variable()]
-        while self.token.type == Type.Lang.Comma:
-            self.next_token()
-            vars.append(self.variable())
-        return vars
-
-    def var_declarations(self):
-        vars = self.vars_names()
-        self.must_next(Type.Lang.Colon)
-        self.next_token()
-        cur_type = self.type_spec()
-        self.must_next(Type.Lang.Semi)
-        self.next_token()
-        return Node.VarsDeclatrations(vars, cur_type)
-
-    def declarations(self):
-        if not self.is_next(Type.Reserved.Var):
-            return []
-
-        self.must_next(Type.Reserved.Var)
-        self.next_token()
-        result = [self.var_declarations()]
-        while self.token.type != Type.Reserved.Begin:
-            result.append(self.var_declarations())
-        return result
-
+    # definition staff
     def procedure_params_vars(self):
         referenced = False
 
@@ -330,7 +364,6 @@ class Parser():
 
         return Node.Function(function_name, function_params, function_return_type, vars_declarations, main_function)
 
-
     def procedures_and_functions(self):
         res = []
         print(self.token)
@@ -342,6 +375,13 @@ class Parser():
                 res.append(self.function_definition())
 
         return res
+
+
+
+    ###########
+    # PROGRAM #
+    ###########
+
 
     def program_init(self):
         self.must_next(Type.Reserved.Program)

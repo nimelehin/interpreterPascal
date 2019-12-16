@@ -61,7 +61,8 @@ class Lexer():
             self.advance()
 
         if result.upper() in reserved_words:
-            return Token(reserved_words[result.upper()], result.upper())
+            present_as = reserved_words_present_as.get(result.upper(), result.upper())
+            return Token(reserved_words[result.upper()], present_as)
 
         return Token(type, result)
 
@@ -94,4 +95,3 @@ class Lexer():
             return self.read_word()
         else:
             return self.read_operation()
-        

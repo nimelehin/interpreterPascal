@@ -158,13 +158,25 @@ class Visitor(NodeVisitor):
             return (lop / rop, Type.Number.Real)
         elif node.type == Type.BinaryOperation.DivInt:
             return (lop // rop, self.cast_type(ltype, rtype, Type.Number.Integer))
-        
+
 
         # boolean operations
         elif node.type == Type.BinaryOperation.And:
-            return (lop and rop, Type.Number.Boolean)
+            if ltype == rtype == Type.Number.Boolean:
+                return (lop and rop, Type.Number.Boolean)
+            elif ltype == rtype == Type.Number.Integer:
+                return (lop & rop, Type.Number.Integer)
+            else:
+                print("TODO AND OPERATION HAS HANDLED DIFF TYPES")
+                exit(0)
         elif node.type == Type.BinaryOperation.Or:
-            return (lop or rop, Type.Number.Boolean)
+            if ltype == rtype == Type.Number.Boolean:
+                return (lop or rop, Type.Number.Boolean)
+            elif ltype == rtype == Type.Number.Integer:
+                return (lop | rop, Type.Number.Integer)
+            else:
+                print("TODO OR OPERATION HAS HANDLED DIFF TYPES")
+                exit(0)
 
         elif node.type == Type.BinaryOperation.Equal:
             return (lop == rop, Type.Number.Boolean)
@@ -190,6 +202,9 @@ class Visitor(NodeVisitor):
 
     def visit_AssignOperation(self, node, params=None):
         op, type = self.visit(node.expr)
+        if type != self.var_types[node.var_id]:
+            print("Incompatible types got {0} expected {1}".format(type, self.var_types[node.var_id]))
+            exit(0)
         self.vars[node.var_id] = op
         return (self.vars[node.var_id], self.var_types[node.var_id])
 

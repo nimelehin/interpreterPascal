@@ -14,9 +14,9 @@ class Type:
         Div = 'DIV'
         DivInt = 'DIVINT'
         Mod = 'MOD'
-       
+
         Assign = 'ASSIGN'
-        
+
         And = 'AND'
         Or = 'OR'
         Equal = 'EQUAL'
@@ -48,6 +48,8 @@ class Type:
         Var = 'VAR'
         Procedure = 'PROCEDURE'
         Function = 'FUNCTION'
+        TrueConst = 'TrueConst'
+        FalseConst = 'FalseConst'
 
     class Special:
         EOF = 'EOF'

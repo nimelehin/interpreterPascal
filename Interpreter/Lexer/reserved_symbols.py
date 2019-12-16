@@ -32,6 +32,13 @@ reserved_words = {
     'PROCEDURE': Type.Reserved.Procedure,
     'FUNCTION': Type.Reserved.Function,
     'VAR': Type.Reserved.Var,
+    'TRUE': Type.Number.Boolean,
+    'FALSE': Type.Number.Boolean,
+}
+
+reserved_words_present_as = {
+    'TRUE': True,
+    'FALSE': False,
 }
 
 available_var_types = [Type.Number.Integer, Type.Number.Real, Type.Number.Boolean]
