@@ -48,6 +48,9 @@ class Type:
         Var = 'VAR'
         Procedure = 'PROCEDURE'
         Function = 'FUNCTION'
+        If = 'IF'
+        Else = 'ELSE'
+        Then = 'THEN'
 
     class Special:
         EOF = 'EOF'

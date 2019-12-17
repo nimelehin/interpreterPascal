@@ -95,7 +95,7 @@ class Parser():
         elif self.is_next(Type.Word):
             return self.variable()
 
-    # term handle prefactor (*, all divs, and) prefactor
+    # term handle factor (*, all divs, and) factor
     def term(self):
         node = self.factor()
         if self.is_next(Type.BinaryOperation.And):
@@ -174,8 +174,10 @@ class Parser():
             return self.assign_statement()
 
         if self.is_next(Type.Word) and (self.is_nth(Type.Lang.Semi, 1) or self.is_nth(Type.Lang.LeftBracket, 1)):
-            print("here")
             return self.procedure_or_function_call()
+
+        if self.is_next(Type.Reserved.If):
+            return self.if_statement()
 
         return Node.NoOperation()
 
@@ -187,6 +189,19 @@ class Parser():
             new_node = self.comparing_expr()
             node = Node.AssignOperation(node.value, new_node)
         return node
+
+    def if_statement(self):
+        self.must_next(Type.Reserved.If)
+        self.next_token()
+        if_expression = self.comparing_expr()
+        self.must_next(Type.Reserved.Then)
+        self.next_token()
+        if_code = self.statement()
+        else_code = None
+        if self.is_next(Type.Reserved.Else):
+            self.next_token()
+            else_code = self.statement()
+        return Node.IfBlock(if_expression, if_code, else_code)
 
     def compound_statement(self):
         self.must_next(Type.Reserved.Begin)
@@ -236,7 +251,14 @@ class Parser():
             self.next_token()
             vars.append(self.variable())
         return vars
-        
+
+
+    #################
+    # IF STATEMENTS #
+    #################
+
+
+
 
     ############################
     # PROCEDURES AND FUNCTIONS #

@@ -208,6 +208,13 @@ class Visitor(NodeVisitor):
         self.vars[node.var_id] = op
         return (self.vars[node.var_id], self.var_types[node.var_id])
 
+    def visit_IfBlock(self, node, params=None):
+        op, type = self.visit(node.if_expr)
+        if op:
+            self.visit(node.run_if_true)
+        elif node.run_if_false is not None:
+            self.visit(node.run_if_false)
+
     def visit_NoOperation(self, node, params=None):
         pass
 

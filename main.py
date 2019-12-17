@@ -1,3 +1,3 @@
 from Interpreter import *
 
-run('examples/booleans.pas')
+run('examples/branches.pas')
