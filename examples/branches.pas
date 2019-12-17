@@ -16,6 +16,11 @@ VAR
     ai, bi, ci: INTEGER;
 BEGIN
 
-    ai := 5;
+    ai := 1;
+
+    while (ai < 10) do begin
+        ai := ai + 1;
+    end;
+
     bi := solve(ai, ci);
 END.

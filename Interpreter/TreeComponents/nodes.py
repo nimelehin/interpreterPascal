@@ -75,13 +75,18 @@ class Node:
             self.return_type = ret_type
             self.type = 'Function'
 
-
     class IfBlock(Basic):
         def __init__(self, if_expr, run_if_true, run_if_false):
             self.if_expr = if_expr
             self.run_if_true = run_if_true
             self.run_if_false = run_if_false
             self.type = 'If'
+
+    class WhileBlock(Basic):
+        def __init__(self, expr, code):
+            self.expr = expr
+            self.code = code
+            self.type = 'While'
 
     class Program(Basic):
         def __init__(self, name, procedures, vars_declarations, main):

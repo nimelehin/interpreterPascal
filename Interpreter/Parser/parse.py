@@ -179,6 +179,9 @@ class Parser():
         if self.is_next(Type.Reserved.If):
             return self.if_statement()
 
+        if self.is_next(Type.Reserved.While):
+            return self.while_statement()
+
         return Node.NoOperation()
 
     def assign_statement(self):
@@ -202,6 +205,15 @@ class Parser():
             self.next_token()
             else_code = self.statement()
         return Node.IfBlock(if_expression, if_code, else_code)
+
+    def while_statement(self):
+        self.must_next(Type.Reserved.While)
+        self.next_token()
+        expression = self.comparing_expr()
+        self.must_next(Type.Reserved.Do)
+        self.next_token()
+        code = self.statement()
+        return Node.WhileBlock(expression, code)
 
     def compound_statement(self):
         self.must_next(Type.Reserved.Begin)

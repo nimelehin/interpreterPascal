@@ -34,6 +34,8 @@ reserved_words = {
     'IF': Type.Reserved.If,
     'ELSE': Type.Reserved.Else,
     'THEN': Type.Reserved.Then,
+    'WHILE': Type.Reserved.While,
+    'DO': Type.Reserved.Do,
     'VAR': Type.Reserved.Var,
     'TRUE': Type.Number.Boolean,
     'FALSE': Type.Number.Boolean,

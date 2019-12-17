@@ -215,6 +215,12 @@ class Visitor(NodeVisitor):
         elif node.run_if_false is not None:
             self.visit(node.run_if_false)
 
+    def visit_WhileBlock(self, node, params=None):
+        op, type = self.visit(node.expr)
+        while op:
+            self.visit(node.code)
+            op, type = self.visit(node.expr)
+
     def visit_NoOperation(self, node, params=None):
         pass
 

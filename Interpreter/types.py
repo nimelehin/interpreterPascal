@@ -51,6 +51,8 @@ class Type:
         If = 'IF'
         Else = 'ELSE'
         Then = 'THEN'
+        While = 'WHILE'
+        Do = 'DO'
 
     class Special:
         EOF = 'EOF'
