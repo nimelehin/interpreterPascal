@@ -88,6 +88,14 @@ class Node:
             self.code = code
             self.type = 'While'
 
+    class ForBlock(Basic):
+        def __init__(self, assign_statement, for_direction_up, to_value, code):
+            self.assign_statement = assign_statement
+            self.for_direction_up = for_direction_up
+            self.to_value = to_value
+            self.code = code
+            self.type = 'For'
+
     class Program(Basic):
         def __init__(self, name, procedures, vars_declarations, main):
             self.name = name

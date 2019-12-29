@@ -13,12 +13,16 @@ end;
 end;
 
 VAR
-    ai, bi, ci: INTEGER;
+    i, ai, bi, ci: INTEGER;
 BEGIN
 
-    ai := 1;
+    ai := -1;
 
     while (ai < 10) do begin
+        ai := ai + 1;
+    end;
+
+    for i := 2 downto -2 do begin
         ai := ai + 1;
     end;
 

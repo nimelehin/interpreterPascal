@@ -75,7 +75,7 @@ class Parser():
     # factor handle -val, +val, val, (exprs), funcs(), vars
     def factor(self):
         result = None
-        if self.is_next([Type.UnaryOperation.Plus, Type.UnaryOperation.Minus, Type.UnaryOperation.Not]):
+        if self.is_next([Type.BinaryOperation.Plus, Type.BinaryOperation.Minus, Type.UnaryOperation.Not]):
             op_token = self.token
             self.next_token()
             result = Node.UnaryOperation(self.factor(), op_token)
@@ -182,6 +182,9 @@ class Parser():
         if self.is_next(Type.Reserved.While):
             return self.while_statement()
 
+        if self.is_next(Type.Reserved.For):
+            return self.for_statement()
+
         return Node.NoOperation()
 
     def assign_statement(self):
@@ -214,6 +217,25 @@ class Parser():
         self.next_token()
         code = self.statement()
         return Node.WhileBlock(expression, code)
+
+    def for_statement(self):
+        self.must_next(Type.Reserved.For)
+        self.next_token()
+        assign_statement = self.assign_statement()
+        plus = True
+        if self.is_next(Type.Reserved.To):
+            self.must_next(Type.Reserved.To)
+            self.next_token()
+            plus = True
+        else:
+            self.must_next(Type.Reserved.DownTo)
+            self.next_token()
+            plus = False
+        to_value = self.comparing_expr()
+        self.must_next(Type.Reserved.Do)
+        self.next_token()
+        code = self.statement()
+        return Node.ForBlock(assign_statement, plus, to_value, code)
 
     def compound_statement(self):
         self.must_next(Type.Reserved.Begin)

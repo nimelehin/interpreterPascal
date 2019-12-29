@@ -52,7 +52,10 @@ class Type:
         Else = 'ELSE'
         Then = 'THEN'
         While = 'WHILE'
+        For = 'FOR'
         Do = 'DO'
+        To = 'TO'
+        DownTo = 'DOWNTO'
 
     class Special:
         EOF = 'EOF'

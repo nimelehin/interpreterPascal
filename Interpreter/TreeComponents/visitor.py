@@ -221,6 +221,26 @@ class Visitor(NodeVisitor):
             self.visit(node.code)
             op, type = self.visit(node.expr)
 
+    def visit_ForBlock(self, node, params=None):
+        interator_var_name = node.assign_statement.var_id
+        self.visit(node.assign_statement)
+        start_value, start_value_type = self.visit(node.to_value)
+        add_value = 1 if node.for_direction_up else -1
+
+        if self.var_types.get(interator_var_name, None) != Type.Number.Integer:
+            print("The variable has not got type of INTEGER")
+            exit(0)
+        if start_value_type != Type.Number.Integer:
+            print(node.to_value.value)
+            print(node.to_value.type)
+            print("The limit has not got type of INTEGER")
+            exit(0)
+
+        while ((not node.for_direction_up or self.vars[interator_var_name] < start_value)
+            and (node.for_direction_up or self.vars[interator_var_name] > start_value)):
+            self.visit(node.code)
+            self.vars[interator_var_name] += add_value
+
     def visit_NoOperation(self, node, params=None):
         pass
 
